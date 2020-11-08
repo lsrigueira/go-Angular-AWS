@@ -19,51 +19,54 @@ class clientSQS:
             MessageAttributeNames=[
                 'All'
             ],
-            VisibilityTimeout=0,
+            VisibilityTimeout=10,
             WaitTimeSeconds=0
         )
         try:
-            print("RECEIVING")
             message = response['Messages'][0]
+            attributes = message['MessageAttributes']
             receipt_handle = message['ReceiptHandle']
-
             # Delete received message from queue
             self.sqsclient.delete_message(
                 QueueUrl=self.urlInbox,
                 ReceiptHandle=receipt_handle
             )
             #decoded = json.loads(message)
-            return 'Received and deleted message: %s' % ola
+            print("Succesfull receibing")
+            return attributes
         except Exception as e:
+            print("Error receiving message: " +str(e))
             return False
 
 
-    def sendMessage(self):
+    def sendMessage(self, token, response, recover):
         # Send message to SQS queue
         response = self.sqsclient.send_message(
             QueueUrl=self.urlOutbox,
-            DelaySeconds=10,
             MessageAttributes={
                 'Response': {
                     'DataType': 'String',
-                    'StringValue': 'TU NO SABES NADA'
+                    'StringValue': response
+                },
+                'Recover': {
+                    'DataType': 'String',
+                    'StringValue': recover
                 },
                 'IdentityToken': {
                     'DataType': 'String',
-                    'StringValue': 'MyIdentity'
+                    'StringValue': token
                 },
             },
+            MessageGroupId='messageGroup1',
             MessageBody=(
-                'Information about current NY Times fiction bestseller for '
-                'week of 12/11/2016.'
-            )
+                'Ola son o body e vou vacio'
+            )   
         )
-    """
-    while True:
-        try:
-            message = receiveMensage()
-            sendMessage()
-        except KeyError as e:
-            print("There are no messages in the queu:  ", e)
-            time.sleep(5)
-    """
+
+    def formatMensage(self, msg):
+        recIdentity = msg['IdentityToken']["StringValue"].replace("\n","")
+        recTitle = msg['Title']["StringValue"].replace("\n","")
+        recOption = msg['Option']["StringValue"].replace("\n","")
+        recNUmber = msg['Number']["StringValue"].replace("\n","")
+        mydict =dict(IdentityToken=recIdentity, Title=recTitle, Option=recOption, Number=recNUmber)
+        return mydict

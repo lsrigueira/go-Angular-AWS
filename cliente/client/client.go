@@ -56,9 +56,10 @@ func (clt *Client) RefreshSQSUrl() {
 		log.Error(err)
 	}
 }
+
 func (clt *Client) ReceiveMessage() (*sqs.Message, error) {
 
-	timeout := int64(5)
+	timeout := int64(20)
 	msgResult, err := clt.sqs.ReceiveMessage(&sqs.ReceiveMessageInput{
 		AttributeNames: []*string{
 			aws.String(sqs.MessageSystemAttributeNameSentTimestamp),
@@ -74,23 +75,27 @@ func (clt *Client) ReceiveMessage() (*sqs.Message, error) {
 		return nil, err
 	}
 
-	//return *msgResult.Messages[0].ReceiptHandle, nil
-	if msgResult != nil {
-		return msgResult.Messages[0], nil
+	if len(msgResult.Messages) == 0 {
+		return nil, fmt.Errorf("There are no messages in queue")
 	}
-	return nil, nil
+	return msgResult.Messages[0], nil
+
 }
-func (clt *Client) SendMessage(token, title, number string) {
+func (clt *Client) SendMessage(token, option, title, number string) {
 
 	_, err := clt.sqs.SendMessage(&sqs.SendMessageInput{
 		MessageAttributes: map[string]*sqs.MessageAttributeValue{
-			"Token": &sqs.MessageAttributeValue{
+			"IdentityToken": &sqs.MessageAttributeValue{
 				DataType:    aws.String("String"),
 				StringValue: aws.String(token),
 			},
 			"Title": &sqs.MessageAttributeValue{
 				DataType:    aws.String("String"),
 				StringValue: aws.String(title),
+			},
+			"Option": &sqs.MessageAttributeValue{
+				DataType:    aws.String("String"),
+				StringValue: aws.String(option),
 			},
 			"Number": &sqs.MessageAttributeValue{
 				DataType:    aws.String("Number"),
@@ -99,12 +104,32 @@ func (clt *Client) SendMessage(token, title, number string) {
 		},
 		MessageBody:    aws.String("IThe atributes have all information"),
 		QueueUrl:       aws.String(clt.UrlInbox),
-		MessageGroupId: aws.String("GroupId" + number + strings.Replace(title, " ", "_", 100)),
+		MessageGroupId: aws.String("GroupId" + number),
 	})
 	if err != nil {
-		log.Error("aqui")
 		log.Error(err)
 	}
+}
+func (clt *Client) VerifyOwner(m map[string]string) bool {
+	if m["IdentityToken"] == clt.GetID() {
+		return true
+	}
+	return false
+}
+
+func (clt *Client) LeaveMessage(msg *sqs.Message) {
+	clt.sqs.ChangeMessageVisibility(&sqs.ChangeMessageVisibilityInput{
+		QueueUrl:          aws.String(clt.UrlOutbox),
+		ReceiptHandle:     aws.String(*msg.ReceiptHandle),
+		VisibilityTimeout: aws.Int64(0),
+	})
+}
+
+func (clt *Client) DeleteMessage(msg *sqs.Message) {
+	clt.sqs.DeleteMessage(&sqs.DeleteMessageInput{
+		QueueUrl:      aws.String(clt.UrlOutbox),
+		ReceiptHandle: aws.String(*msg.ReceiptHandle),
+	})
 }
 
 func (clt *Client) getUrl(option string) (string, error) {
@@ -120,6 +145,15 @@ func (clt *Client) getUrl(option string) (string, error) {
 	}
 	//log.Error(result)
 	return "", fmt.Errorf("Cant find " + option + " queue")
+}
+
+func (clt *Client) GetAttributes(msg *sqs.Message) map[string]string {
+	m := make(map[string]string)
+	m["IdentityToken"] = *msg.MessageAttributes["IdentityToken"].StringValue
+	m["Response"] = *msg.MessageAttributes["Response"].StringValue
+	m["Recover"] = *msg.MessageAttributes["Recover"].StringValue
+
+	return m
 }
 
 func createSession() *session.Session {
@@ -168,6 +202,16 @@ func (clt *Client) Register(username, password string) error {
 	clt.name = username
 	return nil
 }
+
+func (clt *Client) AskEvent() string {
+	log.Info("Introduce the event: ")
+	event, _ := reader.ReadString('\n')
+	event = event[:len(event)-1]
+	strings.Trim(event, " ")
+	clt.name = event
+	return event
+}
+
 func (clt *Client) AskName() string {
 	log.Info("Introduce the name: ")
 	username, _ := reader.ReadString('\n')
@@ -175,7 +219,6 @@ func (clt *Client) AskName() string {
 	strings.Trim(username, " ")
 	clt.name = username
 	return username
-
 }
 
 func (clt *Client) AskPassword() string {
@@ -187,9 +230,24 @@ func (clt *Client) AskPassword() string {
 	return pass
 }
 
+func (clt *Client) Ask(whatever string) string {
+	log.Info("Introduce the " + whatever + ": ")
+	response, _ := reader.ReadString('\n')
+	response = response[:len(response)-1]
+	strings.Trim(response, " ")
+	return response
+}
+
 func (clt *Client) SetAnonymous() {
 
 	clt.name = "Anonymous"
 	clt.password = ""
 	clt.uuid = uuid.New()
+}
+
+func (clt *Client) GetID() string {
+	if clt.name == "Anonymous" {
+		return string(fmt.Sprintf("%x", clt.uuid))
+	}
+	return clt.name
 }
