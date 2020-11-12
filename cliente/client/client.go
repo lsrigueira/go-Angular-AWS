@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
@@ -57,7 +58,29 @@ func (clt *Client) RefreshSQSUrl() {
 	}
 }
 
-func (clt *Client) ReceiveMessage() (*sqs.Message, error) {
+func (clt *Client) ReceiveMessage() map[string]string {
+	var mapAtt map[string]string
+	for {
+		message, err := clt.TakeOneMessage()
+		if err != nil {
+			log.Error(err)
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		mapAtt = clt.GetAttributes(message)
+		if !clt.VerifyOwner(mapAtt) {
+			log.Error("Message not for this client")
+			clt.LeaveMessage(message)
+			time.Sleep(2 * time.Second)
+			continue
+		}
+		clt.DeleteMessage(message)
+		break
+	}
+	return mapAtt
+}
+
+func (clt *Client) TakeOneMessage() (*sqs.Message, error) {
 
 	timeout := int64(20)
 	msgResult, err := clt.sqs.ReceiveMessage(&sqs.ReceiveMessageInput{
