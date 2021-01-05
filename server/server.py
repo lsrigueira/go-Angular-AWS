@@ -12,9 +12,9 @@ sqsclient = clientSQS(queue_urlInbox,queue_urlOutbox)
 while True:
     receivedAtts = False
     while not receivedAtts:
+        print("Waiting...")
         receivedAtts = sqsclient.receiveMensage()
         time.sleep(3)
-        print("Waiting")
         continue
     msg = sqsclient.formatMensage(receivedAtts)
     print(msg["Option"])

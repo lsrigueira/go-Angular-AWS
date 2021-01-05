@@ -1,0 +1,3 @@
+fpdf
+textract
+boto3

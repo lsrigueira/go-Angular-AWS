@@ -7,13 +7,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
 var (
-	menuNumberOptions = 3
+	menuNumberOptions = 5
 	reader            = bufio.NewReader(os.Stdin)
 )
 
@@ -67,29 +66,25 @@ func main() {
 	}
 
 	/*
-
 	   O QUE ESTA DEBERIA SER TRANSPARENTE A COMPRAR, QUEDA DESLIGAR O BUCLE
 	   PARA QUE O SEXA TAMEN A RECIBIR, TERIA SENTIDO METELO DENTOR DO
 	   PROPIO CLIENTE XA QUE ESCOITA E DEVOLVE OS ARGUMENTOS. Despois querdaria
 	   interpretar o resultado "solo"
 	*/
-/*receiving:
+receiving:
 	for {
-		message, err := myClient.ReceiveMessage()
-		if err != nil {
-			log.Error(err)
-			time.Sleep(3 * time.Second)
-			continue
-		}
-		mapAtt := myClient.GetAttributes(message)
-		if !myClient.VerifyOwner(mapAtt) {
-			log.Error("Message not for this client")
-			myClient.LeaveMessage(message)
-			time.Sleep(2 * time.Second)
-			continue
-		}
-		myClient.DeleteMessage(message)
-		print(mapAtt)
+		mapAtt := myClient.ReceiveMessage()
+		/*
+			mapAtt := myClient.GetAttributes(message)
+			if !myClient.VerifyOwner(mapAtt) {
+				log.Error("Message not for this client")
+				myClient.LeaveMessage(message)
+				time.Sleep(2 * time.Second)
+				continue
+			}
+			myClient.DeleteMessage(message)
+			print(mapAtt)
+		*/
 		if strings.Contains(mapAtt["Response"], "Error:") {
 			log.Error(mapAtt["Response"])
 		} else {
@@ -98,7 +93,7 @@ func main() {
 		}
 
 		break receiving
-	}*/
+	}
 }
 
 func printMenu() {

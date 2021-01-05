@@ -127,7 +127,7 @@ func (clt *Client) SendMessage(token, option, title, number string) {
 		},
 		MessageBody:    aws.String("IThe atributes have all information"),
 		QueueUrl:       aws.String(clt.UrlInbox),
-		MessageGroupId: aws.String("GroupId" + number),
+		MessageGroupId: aws.String("lsrigueira"),
 	})
 	if err != nil {
 		log.Error(err)

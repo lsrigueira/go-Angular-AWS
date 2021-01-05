@@ -32,7 +32,7 @@ class clientSQS:
                 ReceiptHandle=receipt_handle
             )
             #decoded = json.loads(message)
-            print("Succesfull receibing")
+            print("Succesfull receiving")
             return attributes
         except Exception as e:
             print("Error receiving message: " +str(e))
