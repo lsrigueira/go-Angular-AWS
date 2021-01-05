@@ -1,0 +1,50 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<div class="element">
+<h1><center>{{title }}</center></h1>
+</div>
+<br><br>
+<input type="text" style="height:50px; width:200px" [(ngModel)]="inputText">
+<br><br>
+<div (click)="getProducts()" ontouchstart="" >
+  <div class="button">
+    <a href="#">Send Order</a>
+  </div>
+</div>
+
+{{ inputText }}
+
+<div class="container">
+	
+	<div class="bird-container bird-container--one">
+		<div class="bird bird--one"></div>
+	</div>
+	
+	<div class="bird-container bird-container--two">
+		<div class="bird bird--two"></div>
+	</div>
+	
+	<div class="bird-container bird-container--three">
+		<div class="bird bird--three"></div>
+	</div>
+	
+	<div class="bird-container bird-container--four">
+		<div class="bird bird--four"></div>
+	</div>
+	
+</div>
+
+</body>
+</html>
+
