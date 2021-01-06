@@ -9,19 +9,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<style>
+		h1 {text-align: center;}
+		p {text-align: center;}
+		div {text-align: center;}
+		input {text-align: center;}
+		</style>
 </head>
 <body>
 <div class="element">
-<h1><center>{{title }}</center></h1>
+<h1 text-align: center>{{title }}</h1>
 </div>
 <br><br>
+<h1>Comprar: titulo;tickets<br>Recover: Id recibido</h1>
+<p>
 <input type="text" style="height:50px; width:200px" [(ngModel)]="inputText">
+</p>
 <br><br>
-<div (click)="getProducts()" ontouchstart="" >
-  <div class="button">
-    <a href="#">Send Order</a>
+
+<div>
+  <div (click)="buyProducts(inputText)" ontouchstart="" class="button">
+    <a href="#">Comprar producto</a>
+  </div>
+  <div (click)="recoverProducts(inputText)" ontouchstart="" class="button">
+	<a href="#">Recuperar Ticket</a>
   </div>
 </div>
+
 
 {{ inputText }}
 

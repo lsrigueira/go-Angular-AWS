@@ -16,10 +16,20 @@ export class AppComponent {
     alert("Message sent: "+variable);
   }
 
-  getProducts(){
-    this.httpService.getPetition()
+  buyProducts(variable: string){
+    this.httpService.buyPetition(variable)
     .subscribe(products => {
-      console.log(products);
+      console.log("BUYPRODUCTS")
+      //console.log(products);
+    });
+  }
+  recoverProducts(variable: string){
+    alert("Pidiendo el producto...")
+    this.httpService.recoverPetition(variable)
+    .subscribe(products => {
+      //console.log("RECOVERPRODUCTS")
+      alert(products["message"]);
+      console.log(products["message"]);
     });
   }
 }

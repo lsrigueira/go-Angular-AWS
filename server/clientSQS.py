@@ -19,7 +19,7 @@ class clientSQS:
             MessageAttributeNames=[
                 'All'
             ],
-            VisibilityTimeout=10,
+            VisibilityTimeout=5,
             WaitTimeSeconds=0
         )
         try:
