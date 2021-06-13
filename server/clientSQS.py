@@ -3,8 +3,11 @@ import time
 import json
 
 class clientSQS:
-    def __init__(self, urlIn, urlOut):
+    def __init__(self):
+        self.sqsresource = boto3.resource('sqs')
         self.sqsclient = boto3.client('sqs')
+        
+    def set_urls(self, urlIn, urlOut):
         self.urlInbox = urlIn
         self.urlOutbox = urlOut
 
@@ -39,8 +42,9 @@ class clientSQS:
             return False
 
 
-    def sendMessage(self, token, response, recover):
+    def sendMessage(self,uuid, token, response, recover):
         # Send message to SQS queue
+        body = str(time.time())+uuid
         response = self.sqsclient.send_message(
             QueueUrl=self.urlOutbox,
             MessageAttributes={
@@ -59,7 +63,7 @@ class clientSQS:
             },
             MessageGroupId='messageGroup1',
             MessageBody=(
-                'Ola son o body e vou vacio'
+                body
             )   
         )
 

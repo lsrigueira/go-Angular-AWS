@@ -75,7 +75,7 @@ class clientS3:
 
     def applyDatabaseChanges(self, newDB):
         """
-        Call this function at the end of Database modification because you will loose the turn
+            Call this function at the end of Database modification because you will loose the turn
         """
         self.generatePDF(newDB, "Database.pdf")
         self.upload_to_aws("Database.pdf","Database.pdf")
