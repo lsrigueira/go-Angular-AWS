@@ -61,8 +61,8 @@ func main() {
 		token := myClient.GetID()
 		Identifier := myClient.Ask("Identifier")
 		myClient.SendMessage(token, "Recover", Identifier, "0")
-		os.Exit(0)
 	default:
+		log.Info("Saliendo")
 	}
 
 	/*
@@ -101,8 +101,8 @@ func printMenu() {
 	log.Info("1) Log In")
 	log.Info("2) Create Account")
 	log.Info("3) Continue as Anonymous")
-	log.Info("4) Exit")
-	log.Info("5) Recover a ticket")
+	log.Info("4) Recover a ticket")
+	log.Info("5) Exit")
 
 }
 

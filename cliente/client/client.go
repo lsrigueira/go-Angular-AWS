@@ -47,12 +47,11 @@ func NewClient() *Client {
 
 func (clt *Client) RefreshSQSUrl() {
 	var err error
-	clt.UrlInbox, err = clt.getUrl("Inbox")
-
+	clt.UrlInbox, err = clt.getUrl("Inbox.fifo")
 	if err != nil {
 		log.Error(err)
 	}
-	clt.UrlOutbox, err = clt.getUrl("Outbox")
+	clt.UrlOutbox, err = clt.getUrl("Outbox.fifo")
 	if err != nil {
 		log.Error(err)
 	}
@@ -105,7 +104,9 @@ func (clt *Client) TakeOneMessage() (*sqs.Message, error) {
 
 }
 func (clt *Client) SendMessage(token, option, title, number string) {
-
+	now := time.Now() 
+	nsec := now.UnixNano()
+	mybody := fmt.Sprintf("IThe atributes have all information. Time:%s   From: %s", nsec, clt.uuid) 
 	_, err := clt.sqs.SendMessage(&sqs.SendMessageInput{
 		MessageAttributes: map[string]*sqs.MessageAttributeValue{
 			"IdentityToken": &sqs.MessageAttributeValue{
@@ -125,7 +126,7 @@ func (clt *Client) SendMessage(token, option, title, number string) {
 				StringValue: aws.String(number),
 			},
 		},
-		MessageBody:    aws.String("IThe atributes have all information"),
+		MessageBody:    aws.String(mybody),
 		QueueUrl:       aws.String(clt.UrlInbox),
 		MessageGroupId: aws.String("lsrigueira"),
 	})
@@ -158,10 +159,10 @@ func (clt *Client) DeleteMessage(msg *sqs.Message) {
 func (clt *Client) getUrl(option string) (string, error) {
 	result, err := clt.sqs.ListQueues(nil)
 	if err != nil {
-		log.Error(err)
+		log.Error("Error Listing queues:",err)
 	}
 	for _, queueX := range result.QueueUrls {
-		log.Error(*queueX)
+		//log.Error(*queueX)
 		if strings.Contains(*queueX, option) {
 			return *queueX, nil
 		}

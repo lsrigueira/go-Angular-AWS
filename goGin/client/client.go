@@ -104,8 +104,8 @@ func (clt *Client) TakeOneMessage() (*sqs.Message, error) {
 	return msgResult.Messages[0], nil
 
 }
-func (clt *Client) SendMessage(token, option, title, number string) {
 
+func (clt *Client) SendMessage(token, option, title, number string) {
 	_, err := clt.sqs.SendMessage(&sqs.SendMessageInput{
 		MessageAttributes: map[string]*sqs.MessageAttributeValue{
 			"IdentityToken": &sqs.MessageAttributeValue{
@@ -125,7 +125,7 @@ func (clt *Client) SendMessage(token, option, title, number string) {
 				StringValue: aws.String(number),
 			},
 		},
-		MessageBody:    aws.String("IThe atributes have all information"),
+		MessageBody:    aws.String("IThe atributes have all information. Time:"+nsec+"  From:"+clt.uuid),
 		QueueUrl:       aws.String(clt.UrlInbox),
 		MessageGroupId: aws.String("lsrigueira"),
 	})
