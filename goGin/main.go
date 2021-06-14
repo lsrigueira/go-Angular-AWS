@@ -43,8 +43,8 @@ func main() {
 		myClient.RefreshSQSUrl()
 		myClient.SetAnonymous()
 		token := myClient.GetID()
-		Identifier := myClient.Ask("Identifier")
-		myClient.SendMessage(token, "Recover", Identifier, "0")
+		ID, _ := c.GetQuery("ID")
+		myClient.SendMessage(token, "Recover", ID, "0")
 		var response string
 	receiving:
 		for {
