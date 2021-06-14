@@ -20,11 +20,11 @@ export class HttpService {
   buyPetition(variable: string){
     let splitted = variable.split(";",2)
     const params= new HttpParams().set("titulo",splitted[0]).set("tickets",splitted[1]);
-    return this.http.get<Entradas>('http://localhost:5005/buy',{params});
+    return this.http.get<Entradas>('http://34.200.109.158:5005/buy',{params});
   }
   recoverPetition(variable: string){
     const params= new HttpParams().set("ID",variable);
     
-    return this.http.get<Entradas>('http://localhost:5005/recover',{params});
+    return this.http.get<Entradas>('http://34.200.109.158:5005/recover',{params});
   }
 }

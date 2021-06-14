@@ -41,11 +41,11 @@ class HttpService {
     buyPetition(variable) {
         let splitted = variable.split(";", 2);
         const params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpParams"]().set("titulo", splitted[0]).set("tickets", splitted[1]);
-        return this.http.get('http://localhost:5005/buy', { params });
+        return this.http.get('http://34.200.109.158:5005/buy', { params });
     }
     recoverPetition(variable) {
         const params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpParams"]().set("ID", variable);
-        return this.http.get('http://localhost:5005/recover', { params });
+        return this.http.get('http://34.200.109.158:5005/recover', { params });
     }
 }
 HttpService.ɵfac = function HttpService_Factory(t) { return new (t || HttpService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"])); };

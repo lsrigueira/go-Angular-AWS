@@ -38,7 +38,7 @@ class clientSQS:
             print("Succesfull receiving")
             return attributes
         except Exception as e:
-            print("Error receiving message: " +str(e))
+            print("No messages in the queue")
             return False
 
 

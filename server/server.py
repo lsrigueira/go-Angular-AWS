@@ -54,7 +54,6 @@ def servir():
             url2download = s3client.create_presigned_URL('tickets-tsa', msg["Title"])
             sqsclient.sendMessage(uuid, msg["IdentityToken"],url2download , msg["Title"])       
 
-
     #sqsclient.sendMessage("thistoken","This is response")
 sqsclient = clientSQS()
 queue_urlInbox = get_queue("Inbox.fifo").url#'https://sqs.us-east-1.amazonaws.com/093218148560/Inbox.fifo'
